@@ -3,7 +3,7 @@ import { Router } from "express";
 const candidatosRoutes = Router();
 
 let candidatos = [
-    { id: Math.random() * 1000000,
+    { id: Math.floor(Math.random() * 100000),
       nome: "Adriana Ribeiro",
       partido: "Partido aleatório",
       idade: 36,
@@ -27,6 +27,17 @@ candidatosRoutes.get("/", (req, res) => {
 candidatosRoutes.post("/", (req, res) => {
     const { nome, partido, idade, segundo, proposta} = req.body
 
+    if(!nome || !partido){
+        return res.status(400).send ({
+            message:"O nome ou partido não foi preenchido!!"
+        });
+    }
+
+    //Maior de idade
+    if( idade < 18 ){
+        return res.status(400).send ({message:"O candidato não possui idade suficiente para participar!"});
+    }
+
     const novoCandidato = {
          id: candidatos.length + 1, 
          nome: nome,
@@ -34,10 +45,13 @@ candidatosRoutes.post("/", (req, res) => {
          idade: idade,
          segundo: segundo,
          proposta : proposta
+
     };
+
     candidatos.push(novoCandidato);
-    return res.status(201)
-    .send(candidatos);
+    return res.status(201).json ({
+        message: "Candidato cadastrado com sucesso"
+    });
 });
 
 candidatosRoutes.get("/:id", (req,res) => {
@@ -45,7 +59,7 @@ candidatosRoutes.get("/:id", (req,res) => {
 
  // console.log(id);
 
- const candidato  = candidato.find( (candidates) => candidates.id == id )
+ const candidato  = candidatos.find( (candidates) => candidates.id == id )
 
  if (!candidato) {
      return res.status (404).send ({
@@ -59,8 +73,20 @@ candidatosRoutes.get("/:id", (req,res) => {
  });
 });
 
+
+
+
+
+
+
+
+
+
+
+
 candidatosRoutes.put("/:id", (req, res) => {
     const { id } = req.params; 
+    const { nome, partido, idade, segundo, proposta} = req.body;
 
     const candidato  = candidatos.find( (candidates) => candidates.id == id );
 
@@ -70,7 +96,6 @@ candidatosRoutes.put("/:id", (req, res) => {
         });
     }
 
-    const { nome, partido, idade, segundo, proposta} = req.body;
     candidato.nome = nome;
     candidato.partido = partido;
     candidato.idade = idade;
