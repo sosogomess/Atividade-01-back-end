@@ -50,7 +50,7 @@ candidatosRoutes.post("/", (req, res) => {
 
     candidatos.push(novoCandidato);
     return res.status(201).json ({
-        message: "Candidato cadastrado com sucesso"
+        message: "Candidato cadastrado com sucesso", novoCandidato
     });
 });
 
@@ -59,7 +59,7 @@ candidatosRoutes.get("/:id", (req,res) => {
 
  // console.log(id);
 
- const candidato  = candidatos.find( (candidates) => candidates.id == id )
+ const candidato  = candidatos.find( (politico) => politico.id == id )
 
  if (!candidato) {
      return res.status (404).send ({
@@ -75,20 +75,11 @@ candidatosRoutes.get("/:id", (req,res) => {
 
 
 
-
-
-
-
-
-
-
-
-
 candidatosRoutes.put("/:id", (req, res) => {
     const { id } = req.params; 
     const { nome, partido, idade, segundo, proposta} = req.body;
 
-    const candidato  = candidatos.find( (candidates) => candidates.id == id );
+    const candidato  = candidatos.find( (politico) => politico.id == id );
 
     if (!candidato) {
         return res.status (404).send ({
@@ -112,13 +103,13 @@ candidatosRoutes.put("/:id", (req, res) => {
 candidatosRoutes.delete("/:id", (req, res) => {
     const { id } = req.params; 
 
-    const candidato  = candidatos.find((candidates) => candidates.id == id );
+    const candidato  = candidatos.find((politico) => politico.id == id );
 
     if (!candidato) {
         return res.status (404).send ({message: "Candidato não encontrado!"});
     }
 
-   candidatos = candidatos.filter((candidates) => candidates.id != id )
+   candidatos = candidatos.filter((politico) => politico.id != id )
 
     return res.status(200).send ({
         message: "Candidato Deletado!",
